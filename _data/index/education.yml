@@ -1,8 +1,11 @@
-- name: Massachusets Instutite of Technology
-  link: http://web.mit.edu/
-  date: 2011 - <i class="fa fa-clock-o" aria-hidden="true" title="Until Now"></i>
-  descr: <br> (expected graduation in 2019)
+- name: University of Seville
+  link: https://www.informatica.us.es/
+  date: 2010 - 2014
+  descr: The degree in Computer Engineering - Software Engineering educates major skilled professionals for the definition, specification, design, evaluation and integration of computer systems or information, as well as holding positions of responsibility in companies. It is a professional high-profile wide interest and demand in our socio-economic context that has been achieved in previous years to 100% of market entry.
 
-- name: Harvard
+Excellent for Requirements Engineering, Design and Testing and Engineering software and professional practice
+
+- name: I.E.S. Punta del Verde
   link: http://www.harvard.edu/
-  date: 2007 - 2011
+  date: 2008 - 2010
+  descr: Computer technician

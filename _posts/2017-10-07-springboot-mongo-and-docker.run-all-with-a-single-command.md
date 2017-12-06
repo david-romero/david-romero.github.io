@@ -153,10 +153,147 @@ Besides, we can run a container from the image created
 
 At this point, we have our application dockerized but it cannot connect to mongo and we can’t see mongo data.
 
+### Mongo import
+
+So that we can have data every time we start our mongo db, I have developed a script that persists in mongo the json files that we enter inside the folder mongo-init.
+
+The script does the following:
+
+1. For each folder inside the data-import folder, it reads all json files and creates a database with the name of the folder.
+2. For each json file, it creates a collection with the name of the file and persists all json objects contained in the file.
+When we run this script, we can check if data is persited searching in logs.
 
 
-Check out the [Jekyll docs][jekyll] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll’s dedicated Help repository][jekyll-help].
+![Mongo Script]({{ "/img/mongoinitlog1.png" | absolute_url }})
+![Mongo Script]({{ "/img/mongoinitlog2.png" | absolute_url }})
 
-[jekyll]:      http://jekyllrb.com
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-help]: https://github.com/jekyll/jekyll-help
+### Dockerized mongo
+
+So that we do not have to have installed mongo in our laptop, we can dockerize mongo and only use it when it is necessary and to be able to export all our technology stack easily.
+
+We only have to search docker image and pull from the repository.
+
+~~~ shell
+docker pull mongo:latest
+~~~ 
+
+
+![Mongo Script]({{ "/img/dokcerpullimage.png" | absolute_url }})
+
+
+### Mongo client
+
+Mongo Client is a web interface that allows us to visualize in a simple way the contents of our collections.
+
+We only have to search docker image and pull from the repository.
+
+We do not need to pull the image, when we run the docker compose this will download all the images that are not founded in our local repository.
+
+### Run all with a single command.
+
+
+If we wanted to run our application, with mongodb, with the imported data and with mongo client we would need to execute the 4 containers in the following order:
+
+1. Mongo
+2. Mongo Import
+3. Mongo Client
+4. App
+
+Running 4 commands every time we make a change is not very useful and often causes bugs.
+
+To solve this problem, we have the docker compose tool that allows us to execute several containers of the same stack and create links between the different containers so that they have visibility between them.
+
+{% highlight yml %}
+version: "2.1"
+   services:
+      mongo:
+         image: mongo:3.2.4
+         ports:
+            - 27017:27017
+         command: --smallfiles
+ 
+      mongo-init:
+         build: ./mongo-init
+         links:
+            - mongo
+ 
+      mongo-client:
+         image: mongoclient/mongoclient
+         ports:
+            - 3000:3000
+         environment:
+            - MONGOCLIENT_DEFAULT_CONNECTION_URL=mongodb://mongo:27017
+         links:
+            - mongo
+ 
+	# APP ************************************************************
+      spring-boot-mongo-docker:
+         image: davromalc/spring-boot-mongo-docker
+         ports:
+            - 8080:8080
+         links:
+            - mongo
+         entrypoint: "java -Djava.security.egd=file:/dev/./urandom -jar /app.jar"
+
+
+{% endhighlight %}
+
+We are going to inspect the contents of this file:
+
+1. Services means each container we will run
+2. Mongo: We are going to use mongo image and expose its tipically port: 27017
+3. Mongo Init:  Build from Dockerfile . Copy the script into the container and run it. It have a link with mongo container. This link is very importante so if this link does not exist, the data would not persist in the desired mongo.
+4. Mongo Client:  From latest docker i :Dmage. The url of the mongo to which it accedes must be configured through environment. As in the application.yml file we must indicate the url with “mongo” and not with “localhost”. And why mongo? Because mongo is the name of the mongo service declared in line 3. If in line 3 we would have declared the service as my-mongo-database, in this environment variable we should put: mongodb://my-mongo-database:27017 and the same in the application.yml file.
+5. App: From the image created above. We expose 8080 port. We set a link with mongo. If we doesn’t set this link, our app would nott run.
+At this point, we can run the 4 containers with a single command, as we promised at the beginning of this article. 😀
+
+We should to run the following command:
+
+~~~ shell
+docker-compose -up
+~~~
+
+![Mongo Script]({{ "/img/dockercomposeup1.png" | absolute_url }})
+![Mongo Script]({{ "/img/dockercomposeup2.png" | absolute_url }})
+
+Each container has been executed successfully and we  can’t see errors in logs.
+
+*Note: If we modify the dataset of mongo init, we hace yo re-build the docker-image. For that purpouse, we hace to run the following command:*
+
+~~~ shell
+docker-compose up --build
+~~~
+
+Now, We can check if all configuration is fine and if we can access mongo data from mongo client and from our application.
+
+
+
+#### Mongo Client:
+
+![Mongo Connection]({{ "/img/mongoclientconnection.png" | absolute_url }})
+![Mongo Dataaseb]({{ "/img/mongoclientdatabase.png" | absolute_url }})
+![Mongo Data]({{ "/img/mongoclientdata.png" | absolute_url }})
+
+
+##### Our Application:
+
+![Mongo Data]({{ "/img/appgetcustomers.png" | absolute_url }})
+
+Calling Rest Controller
+
+
+![Mongo Data]({{ "/img/appcreatecustomer1.png" | absolute_url }})
+
+
+Create customer with postman tool
+
+![Mongo Data]({{ "/img/appcreatecustomer3.png" | absolute_url }})
+
+Now, we can check if customer has been persisted successfully.
+
+### Conclusion
+Thanks to the docker-compose tool we can build a poweful technological stack that helps us develop and build spring boot applications in a simple and intuitive way.
+
+Mongo client and mongo import data are two useful tools for development that allow us to speed up the development of our application and have an clean dataset every time we run the application. This is very helpful to run the integration tests for example.
+
+The full source code for this article is available over on [GitHub](https://github.com/david-romero/spring-boot-mongo-docker).
