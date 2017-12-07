@@ -85,7 +85,7 @@ pipeline {
                     bat "mvn -B --batch-mode -V -U -e org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=true"
                     bat "mvn -B --batch-mode -V -U -e sonar:sonar"
                }, 'Check code coverage' : {
-                    //Realizamos análisis de cobertura de código
+                    //Check coverage
                     //If coverage is under 80% the pipeline fails.
                     bat "mvn -B --batch-mode -V -U -e verify"
                }, 'OWASP Analysis' : {
