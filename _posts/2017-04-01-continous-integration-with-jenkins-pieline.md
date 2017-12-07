@@ -175,8 +175,8 @@ If you have any doubt, please contact me or leave a comment and so I can help an
 
 Links:
 
-* https://jenkins.io/solutions/pipeline/
-* https://jenkins.io/blog/2017/02/07/declarative-maven-project/
-* https://github.com/jenkinsci/pipeline-examples
-* https://codehaus-cargo.github.io/cargo/Maven2+Plugin+Getting+Started.html
-* https://github.com/jenkinsci/slack-plugin
+* [https://jenkins.io/solutions/pipeline/](https://jenkins.io/solutions/pipeline/)
+* [https://jenkins.io/blog/2017/02/07/declarative-maven-project/](https://jenkins.io/blog/2017/02/07/declarative-maven-project/)
+* [https://github.com/jenkinsci/pipeline-examples](https://github.com/jenkinsci/pipeline-examples)
+* [https://codehaus-cargo.github.io/cargo/Maven2+Plugin+Getting+Started.html](https://codehaus-cargo.github.io/cargo/Maven2+Plugin+Getting+Started.html)
+* [https://github.com/jenkinsci/slack-plugin](https://github.com/jenkinsci/slack-plugin)
