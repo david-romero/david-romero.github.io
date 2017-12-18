@@ -109,7 +109,7 @@ pipeline {
       //In this stage, pipeline wait until user confirm next stage.
       //It sends slack messages
            steps {
-                slackSend channel: '@boss',color: '#00FF00', message: '\u00BFDeseas subir a produccion?. \n Confirma en la siguiente web: ${BLUE_OCEAN_URL}' , teamDomain: 'my-company', token: 'XXXXXXXXXXX'
+                slackSend channel: '@boss',color: '#00FF00', message: '\u00BFDo you want to deploy to production environment?. \n Link: ${BLUE_OCEAN_URL}' , teamDomain: 'my-company', token: 'XXXXXXXXXXX'
                 timeout(time: 72, unit: 'HOURS') {
                     input 'Should the project ' + APP_NAME + ' be deployed to production environment\u003F'
                 }
