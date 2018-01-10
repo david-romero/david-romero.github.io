@@ -277,14 +277,19 @@ Now, We can check if all configuration is fine and if we can access mongo data f
 
 ##### Our Application:
 
-![Mongo Data]({{ "/img/appgetcustomers.png" | absolute_url }})
+![Get Customers]({{ "/img/appgetcustomers.png" | absolute_url }})
 
+##### Logs Ouput:
+
+![Logs Output]({{ "/img/appgetdata2.png" | absolute_url }})
 
 Create customer with postman tool
 
 ![Mongo Data]({{ "/img/appcreatecustomer1.png" | absolute_url }})
 
 Now, we can check if customer has been persisted successfully.
+
+![Customer Persisted Successfully]({{ "/img/appcreatecustomer3.png" | absolute_url }})
 
 ### Conclusion
 Thanks to the docker-compose tool we can build a poweful technological stack that helps us develop and build spring boot applications in a simple and intuitive way.
