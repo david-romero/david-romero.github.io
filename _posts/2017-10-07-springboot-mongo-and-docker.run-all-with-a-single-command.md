@@ -178,7 +178,7 @@ docker pull mongo:latest
 ~~~ 
 
 
-![Mongo Script]({{ "/img/dokcerpullimage.png" | absolute_url }})
+![Mongo Script]({{ "/img/dockerpullimage.png" | absolute_url }})
 
 
 ### Mongo client
@@ -254,7 +254,7 @@ docker-compose -up
 ~~~
 
 ![Mongo Script]({{ "/img/dockercomposeup1.png" | absolute_url }})
-![Mongo Script]({{ "/img/dockercomposeup2.png" | absolute_url }})
+![Mongo Script]({{ "/img/dockercompose2.png" | absolute_url }})
 
 Each container has been executed successfully and we  can’t see errors in logs.
 
@@ -279,15 +279,10 @@ Now, We can check if all configuration is fine and if we can access mongo data f
 
 ![Mongo Data]({{ "/img/appgetcustomers.png" | absolute_url }})
 
-Calling Rest Controller
-
-
-![Mongo Data]({{ "/img/appcreatecustomer1.png" | absolute_url }})
-
 
 Create customer with postman tool
 
-![Mongo Data]({{ "/img/appcreatecustomer3.png" | absolute_url }})
+![Mongo Data]({{ "/img/appcreatecustomer1.png" | absolute_url }})
 
 Now, we can check if customer has been persisted successfully.
 
