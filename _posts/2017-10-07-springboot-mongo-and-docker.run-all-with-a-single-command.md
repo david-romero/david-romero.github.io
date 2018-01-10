@@ -45,7 +45,7 @@ If we run mvn clean install we will see how our image has been created successfu
 mvn clean install
 ~~~
 
-![Build Successfully]({{ "/img/Buildimange.png" | absolute_url }})
+![Build Successfully]({{ "/img/buildImage.png" | absolute_url }})
 
 ### How to connect our app to mongo db
 
