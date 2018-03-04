@@ -6,7 +6,7 @@ categories: [redis,consul,lock,kafka,spring]
 comments: true
 ---
 
-![Redis lock vs Consul Lock]({{ "/img/goals.jpg" | absolute_url }})
+![Redis lock vs Consul Lock]({{ "/img/fighting.jpg" | absolute_url }})
 
 A month or so ago, I read a post in Slack Engineering's blog about how [Slack handles billions of tasks in miliseconds](https://slack.engineering/scaling-slacks-job-queue-687222e9d100). 
 
