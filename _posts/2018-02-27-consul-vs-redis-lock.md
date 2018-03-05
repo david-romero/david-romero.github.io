@@ -177,7 +177,7 @@ I have created other simple spring boot web which it is able to listen from kafk
 
 In the first place, I researched about libraries that implemented locks mechanism in consul so that I only have to implement the lock strategy and I had not implement lock mechanism.  I found [consul-rest-client](https://github.com/dcshock/consul-rest-client) a imple rest client for consul that has everything I need.
 
-As for redis, I have been working with [Redission](https://github.com/redisson/redisson) with successful results so I choose this library.
+As for redis, I have been working with [Redisson](https://github.com/redisson/redisson) with successful results so I choose this library.
 
 #### Config:
 
