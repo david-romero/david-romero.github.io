@@ -175,9 +175,9 @@ Finally, we just only have to implement the listener and the lock strategies.
 
 I have created other simple spring boot web which it is able to listen from kafka topics too.
 
-In the first place, I researched about libraries that implemented locks mechanism in consul so that I only have to implement the lock strategy and I had not implement lock mechanism.  I found [consul-rest-client](https://github.com/dcshock/consul-rest-client) a imple rest client for consul that has everything I need.
+In the first place, I researched about libraries that implemented locks mechanism in consul so that I only have to implement the lock strategy and I had not implement lock mechanism.  I found [consul-rest-client](https://github.com/dcshock/consul-rest-client) a rest client for consul that has everything I need.
 
-As for redis, I have been working with [Redisson](https://github.com/redisson/redisson) with successful results so I choose this library.
+As for redis, I have been working with [Redisson](https://github.com/redisson/redisson) with successful results both in performance and usability so I choose this library.
 
 #### Config:
 
@@ -342,7 +342,7 @@ Redis config is very easy.
 
 #### Consumer:
 
-For the implementation of the consumer, I have used the integration of kafka offered by spring. 
+For the implementation of the consumer, I have used a kafka integration offered by spring. 
 
 In our consumer, I want to implement the following algorithm:
 
@@ -352,7 +352,8 @@ In our consumer, I want to implement the following algorithm:
 		1. Try to get lock
 		2. If this container has the lock
 			1. Build domain entity
-			2. Release lock
+			2. Store the domain entity in the future persisted entities list.
+			3. Release lock
 	3. If I have been able to map to domain entity
 		1. Add to future persisted entities list
 2. If the future persisted entities list is not empty
@@ -562,7 +563,7 @@ In my humble opinion, we can infer kafka batch mode is faster than non batch mod
 
 As for which is faster, we can also conclude that redis is faster than consul due to the results obtained. For example, 50.000 messages are consumed in redis in less than 20 seconds, meanwhile, Consul took about 40 seconds, double than redis. With 100.000 messages ocurrs the same. Redis wins with only 25 seconds approximately, nevertheless consul took more than 60 seconds, problematic times for real time applications.
 
-As a curiosity, with kafka batch mode, the more container we use, the more time we took since when increasing the containers, we increase the requests to our infrastructure and therefore the latency and crosses.
+As a curiosity, with kafka batch mode, the more container we use, the more time we took since when increasing the containers, we increase the requests to our infrastructure and therefore the latency and collisions.
 However, as we persist a set of data instead of a single data, we substantially improve the times used thanks to mongo and its way of persisting large collections of data.
 
 The full source code for this article is available over on [GitHub](https://github.com/david-romero/spring-kafka).
