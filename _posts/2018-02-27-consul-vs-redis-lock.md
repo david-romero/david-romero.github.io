@@ -6,7 +6,7 @@ categories: [redis,consul,lock,kafka,spring]
 comments: true
 ---
 
-![Redis lock vs Consul Lock]({{ "/img/fighting.jpg" | absolute_url }})
+![Redis lock vs Consul Lock]({{ "/img/kafka-post/fighting.jpg" | absolute_url }})
 
 A month or so ago, I read a post in Slack Engineering's blog about how [Slack handles billions of tasks in miliseconds](https://slack.engineering/scaling-slacks-job-queue-687222e9d100). 
 
@@ -534,6 +534,14 @@ public class LockFactory  {
 
 To determine the performance offered by both mechanism, I have been doing multiple benchmarcks with several executions, containers and number of messasges.
 
+In the following pictures, we could see the results obtained by several executions in this scenarios visualized as diagrams:
+
+* Redis.
+* Redis with kafka batch mode.
+* Consul with kafka batch mode.
+
+In the X axis, we can see the number of messages sent to kafka and in the Y axis we can see the total time spent in consuming all messages. The different colours represent the number of containers used in the benchmarcking.
+
 
 #### Redis lock:
 
@@ -546,3 +554,15 @@ To determine the performance offered by both mechanism, I have been doing multip
 #### Consul lock with kafka batch mode:
 
 ![Consul Lock]({{ "/img/kafka-post/consul-batch-mode.png" | absolute_url }})
+
+
+### Conclusions:
+
+In my humble opinion, we can infer kafka batch mode is faster than non batch mode since the different is incredibly big, reaching differences of more than 30 seconds as for example in 30.000 messages.
+
+As for which is faster, we can also conclude that redis is faster than consul due to the results obtained. For example, 50.000 messages are consumed in redis in less than 20 seconds, meanwhile, Consul took about 40 seconds, double than redis. With 100.000 messages ocurrs the same. Redis wins with only 25 seconds approximately, nevertheless consul took more than 60 seconds, problematic times for real time applications.
+
+As a curiosity, with kafka batch mode, the more container we use, the more time we took since when increasing the containers, we increase the requests to our infrastructure and therefore the latency and crosses.
+However, as we persist a set of data instead of a single data, we substantially improve the times used thanks to mongo and its way of persisting large collections of data.
+
+The full source code for this article is available over on [GitHub](https://github.com/david-romero/spring-kafka).
