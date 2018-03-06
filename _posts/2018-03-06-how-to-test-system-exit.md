@@ -2,7 +2,7 @@
 layout: post
 title:  "How to test a System.exit(1)"
 date:   2018-03-06 12:00:00
-categories: [redis,test,mockito,spring]
+categories: [Redis,Testing,Mockito,Spring]
 comments: true
 ---
 
