@@ -2,7 +2,7 @@
 layout: post
 title:  "Redis lock vs Consul lock"
 date:   2018-02-27 12:00:00
-categories: [redis,consul,lock,kafka,spring]
+categories: [Redis,Consul,Locks,Locking mechanism,Kafka,Spring,Tutorial]
 comments: true
 ---
 

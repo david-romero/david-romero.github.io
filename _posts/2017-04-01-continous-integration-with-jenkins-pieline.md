@@ -2,7 +2,7 @@
 layout: post
 title:  "Continuous integration with Jenkins Pipeline"
 date:   2017-04-01 15:00:00
-categories: [tutorial,jenkins,CI,maven]
+categories: [Tutorial,Jenkins,CI,Maven]
 comments: true
 ---
 Since the beginning of 2017, I have been instilling in my company the importance and necessity of having a strong CI environment. I started installing Jenkins in a small server and right now I've got a project to implement continuous integration for all the development teams in the company.

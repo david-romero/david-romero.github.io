@@ -2,7 +2,7 @@
 layout: post
 title:  "Spring Boot, Mongo and Docker. Run all with a single command."
 date:   2017-10-07 15:00:00
-categories: [tutorial,maven,docker,mongo,spring]
+categories: [Tutorial,Maven,Docker,Docker compose,Mongo,Spring,Spring Boot]
 comments: true
 ---
 In this article, we’ll se how to run a spring boot application with mongo db and a mongo client with a single command. For this purpose, we must dockerize our application, the mongo database and the mongo client.
