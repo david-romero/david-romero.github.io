@@ -12,7 +12,7 @@ comments: true
 
 ### 1. Introduction
 
-After a couple of months learning and researching about kafka streams, i wasn't able to find much information about how to test my kafka streams so I would like to share how a kafka stream could be tested with unit or integration tests.
+After a couple of months learning and researching about kafka streams, I wasn't able to find much information about how to test my kafka streams so I would like to share how a kafka stream could be tested with unit or integration tests.
 
 
 We have the following scenarios:
@@ -434,13 +434,13 @@ public class BankBalanceKStreamBuilderTest {
 			throws InterruptedException {
 		int numberOfTransactions = 600;
 		executor.execute(() -> {
-			for (int i = 0; i < numberOfTransactions; i++) {
-				Transaction t = new Transaction();
-				t.setAmount(ThreadLocalRandom.current().nextDouble(0.0, 100.0));
+			for (int transactionNumber = 0; transactionNumber < numberOfTransactions; transactionNumber++) {
+				final Transaction transaction = new Transaction();
+				transaction.setAmount(ThreadLocalRandom.current().nextDouble(0.0, 100.0));
 				final String name = names[ThreadLocalRandom.current().nextInt(0, 4)]; //we have only 4 mocked customers.
-				t.setName(name);
-				t.setTimestamp(System.nanoTime());
-				template.send(INPUT_TOPIC, name, t);
+				transaction.setName(name);
+				transaction.setTimestamp(System.nanoTime());
+				template.send(INPUT_TOPIC, name, transaction);
 			}
 		}); //we send the trasaction in a secondary thread.
 
