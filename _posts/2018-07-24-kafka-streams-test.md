@@ -6,7 +6,7 @@ categories: [Kafka, Kafka-streams, Testing, Spring, Tutorial]
 comments: true
 ---
 
-![Apache Kafka](./img/apache-kafka.png){:height="500px" width="500px"}
+![Apache Kafka](https://david-romero.github.io/img/apache-kafka.png){:height="500px" width="500px"}
 
 ## How to test Kafka Streams
 
@@ -243,7 +243,7 @@ Once we have our TestDrive we can test our topology.
 
 Once we have our test finished we can verify that everything is fine
 
-![Success](./img/kafkaUnitTest.png)
+![Success](https://david-romero.github.io/img/kafkaUnitTest.png)
 
 
 ### 4. Integration tests
@@ -459,7 +459,7 @@ public class BankBalanceKStreamBuilderTest {
 
 Our tests is done, so we can verify everything is fine!
 
-![Success](./img/kafkaIntegrationTest.png)
+![Success](https://david-romero.github.io/img/kafkaIntegrationTest.png)
 
 As we talked before, integration tests are very slower, and we can check this issue in the previous test. It takes 16 seconds on my machine, a huge amount of time.
 
