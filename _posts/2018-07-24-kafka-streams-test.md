@@ -6,7 +6,7 @@ categories: [Kafka, Kafka-streams, Testing, Spring, Tutorial]
 comments: true
 ---
 
-![Apache Kafka](./img/apache-kafka.png | width=500)
+![Apache Kafka](./img/apache-kafka.png){:height="500px" width="500px"}
 
 ## How to test Kafka Streams
 
