@@ -2,11 +2,11 @@
 layout: post
 title:  "CQRS with Kafka Streams"
 date:   2018-10-20 14:00:00
-categories: [Kafka, Kafka-streams, CQRS, Spring, Tutorial, Event Sourcing, Talks, Twitter Streams, Docker, PostgreSQL, Kafka Connect, Spring Boot, Kotlin]
+categories: [Kafka, Kafka Streams, CQRS, Spring, Tutorial, Event Sourcing, Talks, Twitter Streams, Docker, PostgreSQL, Kafka Connect, Spring Boot, Kotlin]
 comments: true
 ---
 
-![CQRS with Kafka Streams](https://david-romero.github.io/img/cqrs-with-kafka-streams.png){:height="500px" width="500px"}
+![CQRS with Kafka Streams](https://david-romero.github.io/img/cqrs-with-kafka-streams.png)
 
 ## CQRS with Kafka Streams
 
@@ -17,11 +17,11 @@ Last September, my coworker [Iván Gutiérrez](https://es.linkedin.com/in/ivangu
 As we have received positive feedback and we have learned a lot of things, I want to share this demo in order to it will be available to anyone who wants to take a look.
 
 The demo was divided into 5 steps due to simplicity.
-1. [The stack](the-stack)
-2. [Producer (Writer App)](producer)
-3. [Kafka Stream](kafka-stream)
-4. [Kafka Connector](kafka-connector)
-5. [Reader App](reader-app)
+1. [The stack](#the-stack)
+2. [Producer (Writer App)](#producer)
+3. [Kafka Stream](#kafka-stream)
+4. [Kafka Connector](#kafka-connector)
+5. [Reader App](#reader-app)
 
 ### 2. Implementation
 

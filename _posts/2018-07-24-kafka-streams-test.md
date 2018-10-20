@@ -2,7 +2,7 @@
 layout: post
 title:  "How to test Kafka Streams"
 date:   2018-07-24 19:00:00
-categories: [Kafka, Kafka-streams, Testing, Spring, Tutorial]
+categories: [Kafka, Kafka Streams, Testing, Spring, Tutorial]
 comments: true
 ---
 
