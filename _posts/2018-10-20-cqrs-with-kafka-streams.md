@@ -25,6 +25,8 @@ The demo was divided into 5 steps due to simplicity.
 
 ### 2. Implementation
 
+The demo is an implementaiton of the [CQRS pattern](https://martinfowler.com/bliki/CQRS.html) based on Kafka and Kafka Streams. As we can see in the main image, Kafka is able of decoupling read (Query) and write (Command) operations, which helps us to develop event sourcing applications faster.
+
 #### The Stack
 
 The whole stack has been implemented in Docker for its simplicity when integrating several tools and for its isolation level. 
@@ -71,7 +73,7 @@ services:
       - zookeeper
       - kafka
     volumes:
-      - $PWD/connect-plugins:/etc/kafka-connect/jars
+      - $PWD/connect-plugins:/etc/kafka-connect/jars # in this volume is located the postgre driver.
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka:9092
       CONNECT_REST_PORT: 8083 # Kafka connect creates an endpoint in order to add connectors
@@ -107,20 +109,30 @@ services:
 
 {% endhighlight %}
 
-Some dependencies, like junit, mockito, etc.. has been omitted to avoid verbosity
+The above [docker-compose file](https://github.com/david-romero/demo-twitter-kafka/blob/master/docker-compose.yml) contains all tools involved in this demo:
+
+1. Zookeper: Inseparable partner of kafka. 
+2. Kafka: The main actor. You need to set zookeeper ip. You can see all proficiencies in the [provided slides above](https://drive.google.com/open?id=1TrcvgfnO7Dqg96JYSp881i0zdr2gQJ4xHR_BeOLexIM).
+3. Kafka Connector: One of the 4 main Kafka core API. It's in charge of reading records of a provided topic and inserting them into PostgreSQL.
+4. PostgreSQL: SQL Database. 
+
 
 #### Producer
 
-Unit tests for kafka streams are available from version 1.1.0 and it is the best way to test the topology of your kafka stream. The main advantage of unit tests over the integration ones is that they do not require the kafka ecosystem to be executed, therefore they are faster to execute and more isolated.
+It's the writer app. This piece of our infrastructure is in charge of read the tweets containing "Java" word from Twitter and send them to Kafka.
 
-Let's suppose that we have the following scenario:
+The following code has two sections: Twitter Stream and Kafka Producer.
 
-We have a topic to which all the purchases made in our application and a topic for each customer. Each purchase has an identification code which includes the code of the customer who made the purchase. We have to redirect this purchase to the customer's own topic. To know the topic related to each client we receive a map where the key will be the customer code and the value of the target topic. 
-Besides, we have to replace spanish character 'ñ' by 'n'.
-
-The solution provided is the following:
+Twitter Stream: Create a [data stream of tweets](https://developer.twitter.com/en/docs/tutorials/consuming-streaming-data.html). You can add a FilterQuery if you want to filter the stream before consuption. You need credentials for accesing to [Twitter API](https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens.html). 
+Kafka Producer: It sends records to Kafka. In our demo, it sends records without key to the 'tweets' topic.
 
 {% highlight java %}
+
+@SpringBootApplication
+@Slf4j
+public class DemoTwitterKafkaProducerApplication {
+
+	public static void main(String[] args) {
 
 		// Kafka config
 		Properties properties = new Properties();
@@ -144,7 +156,7 @@ The solution provided is the following:
 			//Some methods have been omitted for simplicity.
 
 			private long getLikes(Status status) {
-				return status.getRetweetedStatus() != null ? status.getRetweetedStatus().getFavoriteCount() : 0;
+				return status.getRetweetedStatus() != null ? status.getRetweetedStatus().getFavoriteCount() : 0; // Likes can be null.
 			}
 		};
 		twitterStream.addListener(listener);
@@ -159,47 +171,16 @@ The solution provided is the following:
 
 {% endhighlight %}
 
-Now, we can test our solution.
-
-Following the [documentation](https://kafka.apache.org/documentation/streams/developer-guide/testing.html), we need to create a TestDriver and a consumer factory if we want to read messages.
-
-{% highlight java %}
-
-	
-
-
-
-{% endhighlight %}
-
-The driver configuration should be the same that we have in our kafka environment.
-
-Once we have our TestDrive we can test our topology.
-
-{% highlight java %}
-
-	
-	
-
-
-{% endhighlight %}
-
-Once we have our test finished we can verify that everything is fine
-
-![Success](https://david-romero.github.io/img/kafkaUnitTest.png)
-
+This app is a Spring Boot application.
 
 #### Kafka Stream
 
-In the same way that the unit tests help us verify that our topology is well designed, the integration tests also help us in this task by adding the extra to introduce the kafka ecosystem in our tests.
-This implies that our tests will be more "real" but in the other hand, they will be much slower.
+The main piece of our infrastructure is in charge of read the tweets from 'tweets' topics, group them by username, count tweets, extract the most liked tweet and send them to the 'influencers' topic.
 
-Spring framework has developed a very useful library that provides all necessary to develop a good integration tests. Further information could be obtained [here](https://github.com/spring-projects/spring-kafka)
+Let's focus on the two most important methods of the next block of code:
 
-Let's suppose that we have the following scenario:
-
-We have a topic with incoming transactions and we must group them by customer and create a balance of these transactions. This balance will have the sum of the transaction amounts, the transaction count, and the last timestamp.
-
-The solution provided is the following:
+1. stream method: Kafka Stream Java API follow the same nomenclature that the Java 8 Stream API. The first operation performed in the pipeline is to select the key since each time the key changes, a re-partition operation is performed in the topic. So, we should change the key as less as possible. Then, we have to calculate the tweet that most likes has accumulated. and as this operation is a statefull operation, we need to perform an aggregation. The aggregation operation will be detailed in the following item. Finally, we need to send the records to the output topic called 'influencers'. For this task we need to map Influencer class to InfluencerJsonSchema class and then, use `to` method. InfluencerJsonSchema class will be explained in Kafka Connector section. Peek method is used for debugging purposes.
+2. aggregateInfoToInfluencer method: This is a [statefull operation](https://stackoverflow.com/a/25582424). Receives three args: the username, the raw tweet from the topic and the previous stored Influencer. Add one to the tweet counter and compare the likes with the tweet that more likes had. Returns a new instance of the Influecer class in order to mantain immutability.
 
 {% highlight java %}
 
@@ -248,7 +229,10 @@ The solution provided is the following:
 
 {% endhighlight %}
 
+@EnableKafkaStreams annotation and kStreamsConfigs method are the responsible of integrate the Kafka Stream API with Spring Framework.
+Further information of this integration is provided [here](https://docs.spring.io/spring-kafka/docs/current/reference/html/)
 
+In the above block of code is mentioned Influencer class and in order to facilitate the read, the code of Influencer class is provided here:
 
 {% highlight java %}
 	
@@ -278,7 +262,9 @@ The solution provided is the following:
 
 {% endhighlight %}
 
+`fromJson` method is mandatory due to serialization proccess used by Kafka Stream. See [Kafka Stream Serde](https://kafka.apache.org/10/documentation/streams/developer-guide/datatypes.html) if you want to know more about this topic.
 
+This app is a Spring Boot application.
 
 #### Kafka Connector
 
@@ -347,24 +333,23 @@ public class InfluencerJsonSchema {
 
 {% endhighlight %}
 
+Once we have developed the connector, we have to add the connector to our Kafka Connector container and this can be performed with a simple curl.
+
 ```console
 foo@bar:~$ curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d @connect-plugins/jdbc-sink.json
 ```
 
 #### Reader App
 
+We have developed a simple Spring Boot applications to read inserted records in Postgre. This app is very simple and the code will be skipped of this post since it does not matter. 
+
+Attached a screenshot of the UI in order to view the results.
+
+![Reader App](https://david-romero.github.io/img/cqrs-with-kafka-streams-ui.png)
+
 ### 3. Conclusion
 
-If we want to develop a quality kafka streams we need to test the topologies and for that goal we can follow two approaches: kafka-tests and/or spring-kafka-tests. 
-In my humble opinion, we should develop both strategies in order to tests as cases as possible always maintaining a balance between both testing strategies.
-In this [Github Repo]((https://github.com/david-romero/kafka-streams-tests)), there is available the tests for scenario 3.
+
 
 The full source code for this article is available over on [GitHub](https://github.com/david-romero/demo-twitter-kafka).
-
-
-
-
-
-
-
 
