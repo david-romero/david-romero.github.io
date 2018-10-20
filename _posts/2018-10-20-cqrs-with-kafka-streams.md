@@ -16,7 +16,7 @@ Last September, my coworker [Iván Gutiérrez](https://es.linkedin.com/in/ivangu
 
 As we have received positive feedback and we have learned a lot of things, I want to share this demo in order to it will be available to anyone who wants to take a look.
 
-The demo was divided into 5 steps due to simplicity.
+The demo was divided into 5 steps.
 1. [The stack](#the-stack)
 2. [Producer (Writer App)](#producer)
 3. [Kafka Stream](#kafka-stream)
@@ -268,6 +268,12 @@ This app is a Spring Boot application.
 
 #### Kafka Connector
 
+Once we have fed our topic 'influencers', we have to persist the data to Postgre. For this task, Kafka provide a powerful API called [Kafka Connect](https://www.confluent.io/connectors/). Confluent, the company created by Apache Kafka's developers, has developed several connectors  for many third-party tools. For JDBC, exits two connectors: [source and sink](https://docs.confluent.io/current/connect/kafka-connect-jdbc/index.html). Source connectors reads data from jdbc drivers and send data to Kafka. Sink connectors reads data from Kafka and send it to jdbc driver.
+
+We are going to use a JDBC Sink connector and this connector needs the schema information in order to map topic records into sql records. In our demo, the schema is provided in the topic record. For that reason, we have to map from Influecer class to InfluencerJsonSchema class in our data pipeline.
+
+In the following code, you can see how the schema will be sent. If you want to see how is the result in json format you can see the provided gist.
+
 {% highlight java %}
 
 /**
@@ -314,6 +320,9 @@ public class InfluencerJsonSchema {
 
 {% endhighlight %}
 
+Then, we need to configure our Kafka connector. Source topic, destination table, primary key or url connection should be provided. 
+Special mention for the field 'insert.mode'. We use 'upsert' mode due to the primary key is the username so the records will be inserted or updated depending on whether the user has been persited before or not.
+
 {% highlight json %}
 
 {
@@ -333,6 +342,8 @@ public class InfluencerJsonSchema {
 
 {% endhighlight %}
 
+The above json code has been stored into a file in order to have a follow-up of it
+
 Once we have developed the connector, we have to add the connector to our Kafka Connector container and this can be performed with a simple curl.
 
 ```console
@@ -347,9 +358,35 @@ Attached a screenshot of the UI in order to view the results.
 
 ![Reader App](https://david-romero.github.io/img/cqrs-with-kafka-streams-ui.png)
 
-### 3. Conclusion
+If you want to see the code, is available in [Github](https://github.com/david-romero/demo-twitter-kafka/tree/master/reader)
 
+### 3. How to run
 
+If you want to run the demo you have to execute the following commands.
+
+1. ```console
+foo@bar:~$ docker-compose up
+```
+2. ```console
+foo@bar:~$ curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://localhost:8083/connectors/ -d @connect-plugins/jdbc-sink.json
+```
+3. ```console
+foo@bar:~$ mvn clean spring-boot:run -pl producer
+```
+4. ```console
+foo@bar:~$ mvn clean spring-boot:run -pl consumer
+```
+5. ```console
+foo@bar:~$ mvn clean spring-boot:run -pl reader
+```
+
+### 4. Conclusion
+
+This demo show us a great example of a CQRS implementation and how easy it's to implement this pattern with Kafka.
+
+In my humble opinion, Kafka Stream is the most powerful API of Kafka since provide a simple API with awesome features that abstracts you from all the necessary implementations to consume records from Kafka and allows you to focus on developing robust pipelines for managing large data flows.
+
+Besides, Spring Framework provides an extra layer of abstraction that allow us to integrate Kafka  with Spring Boot applications.
 
 The full source code for this article is available over on [GitHub](https://github.com/david-romero/demo-twitter-kafka).
 
