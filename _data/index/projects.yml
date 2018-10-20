@@ -1,0 +1,7 @@
+- name: DEVBunch
+  descr: "DEVBunch is a tool to collect information of many posts from several technical blogs. The project imports, normalizes and stores this information from different RSS declared in an OPML file"
+  github: https://github.com/david-romero/devbunch
+
+- name: BBVA BaaS in USA
+  descr: "Microservice architecture to performing a banking PaaS (BaaS). Main tech stack: Spring Framework, Docker, MongoDB, Amazon AWS, Cucumber, Consul, Zuul, MongoDB, Redis."
+  url: https://bbvaopenplatform.com/content/home
