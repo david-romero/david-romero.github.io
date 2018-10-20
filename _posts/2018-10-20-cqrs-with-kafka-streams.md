@@ -356,7 +356,7 @@ We have developed a simple Spring Boot applications to read inserted records in 
 
 Attached a screenshot of the UI in order to view the results.
 
-![Reader App](https://david-romero.github.io/img/cqrs-with-kafka-streams-ui.png)
+![Reader App](https://david-romero.github.io/img/kafka-stream-reader-app.png)
 
 If you want to see the code, is available in [Github](https://github.com/david-romero/demo-twitter-kafka/tree/master/reader)
 
