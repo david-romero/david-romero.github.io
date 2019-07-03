@@ -43,7 +43,23 @@ In my humble opinion, this idea should be taken into account whenever possible a
 ___  
 Although this process may look very difficult and very hard, after some bad experiences, I think this procedure is a really good approach for making a technical interview.  The homework is a good filter and an assurance about the candidate who will be interviewed in person. Moreover, a pair programming session is one of the best techniques to exchange views on any technical debate.
 
-* In one of the final chapters, the author teaches the reader how to be more productive. Being honest, I have to put emphasis on this capability. 
+* In one of the final chapters, the author teaches the reader how to be more productive. Being honest, I have to put emphasis on this capability.  
+In one of the final chapters, the author teaches the reader how to be more productive. Being honest, I have to put emphasis on this capability.  For this assignment, I would like to highlight the improved graph of the chapter 'Add features with ease' to the which, the author has added when to do long and short breaks in order to manage better the email or answering some chat without losing the focus.
+In this flow diagram, the author has added the breaks concisely to fit with the stages in which a developer need a short break, like when in the TDD cycle, a unit test is passing or a longer break, like when the code is refactored. Besides,  He stipulates the stages in which a break is not allowed like when a developer is writing a unit test or when a developer is cleaning up the code.
+
+* At the end of the book, the author gives several tips about how to lead a team. In particular, I would like to stress in the section 'General tips on Reviewing code'.  
+As a senior software engineer, you have to review code every day and being a great code reviewer is a great capability that your team will appreciate. The following tips will help you to do a great code reviews:
+
+1. Read the entire changeset before commenting on it.
+2. Speak about the code, not the coder
+3. If you don't understand something, ask
+4. Approach style-related issues tactfully.
+5. Don't be afraid to have a real-time conversation
+6. Convey this information to others.
+7. Interacting with QA.
+8. Interacting with a Security Team.
+
+To sum up, the senior software engineer is a great book in which capabilities that a senior software engineer must have are been explained, and besides, several techniques for improving your daily work. I've learned a lot of useful concepts and ideas that I'm already applying in my current job that has helped me to improve my performance. I would like to recommend this book to every software engineer, not only junior developers but also to more experienced developers since it offers some valuable guidelines for everyone who wants to improve its capabilities and to be a better software engineer.
 
 
 
