@@ -40,7 +40,7 @@ In my humble opinion, this idea should be taken into account whenever possible a
 2. Have the candidate do a "homework assignment"
 3. Conduct a technical phone screen.
 4. Pair program with the candidate person.  
-___  
+  
 Although this process may look very difficult and very hard, after some bad experiences, I think this procedure is a really good approach for making a technical interview.  The homework is a good filter and an assurance about the candidate who will be interviewed in person. Moreover, a pair programming session is one of the best techniques to exchange views on any technical debate.
 
 * 
