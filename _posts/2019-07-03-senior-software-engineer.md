@@ -31,7 +31,7 @@ This flow diagram, is a mix between TDD and developing good acceptance test and,
 
 2. Falacies. Making decisions based on fallacies can create problems later on and fallacies have a way of cropping up in many debates. The author exposes some of the main fallacies existing in the software engineering like hasty generalization, correlation does not imply causation, false equivalence or appeal to authority.
 
-* In the following chapter, 'Bootstrap Greenfield Systems', I would like to highlight a new term, for me at least, MDS or minimum deployable system. This section explains that once you have made the required technical decisions and the ecosystem has been established, you must focus on deploying your system as fast as possible to production.  When the system has been deployed, developers can add new features more easily and that features can be deployed and delivered more quickly than if you had started developing features at the beginning and leaving the deployments for later. 
+* In the following chapter, 'Bootstrap Greenfield Systems', I would like to highlight a new term, for me at least, MDS or minimum deployable system. This section explains that once you have made the required technical decisions and the ecosystem has been established, you must focus on deploying your system as fast as possible to production.  When the system has been deployed, developers can add new features more easily and that features can be deployed and delivered more quickly than if you had started developing features at the beginning and leaving the deployments for later.  
 In my humble opinion, this idea should be taken into account whenever possible and particularly in the projects that continuous deployment cannot be performed.
 
 * One of the aspects that generates the most controversy among the technical leaders is how to make effective technical interviews. In the ninth chapter, David Bryant explains how the ideal technical interview should be with a step by step process:
@@ -39,7 +39,7 @@ In my humble opinion, this idea should be taken into account whenever possible a
 1. Informal technical discussion to meet and get to know the candidate
 2. Have the candidate do a "homework assignment"
 3. Conduct a technical phone screen.
-4. Pair program with the candidate person.
+4. Pair program with the candidate person.  
 Although this process may look very difficult and very hard, after some bad experiences, I think this procedure is a really good approach for making a technical interview.  The homework is a good filter and an assurance about the candidate who will be interviewed in person. Moreover, a pair programming session is one of the best techniques to exchange views on any technical debate.
 
 * 
