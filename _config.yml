@@ -5,9 +5,9 @@
 #
 title: David Romero
 email: davromalc@gmail.com
-description: A simple and awesome blog theme powered by jekyll.
+description: My personal website.
 url: https://david-romero.github.io/ # the base hostname & protocol for your site
-keywords: ["Programming", "Java", "Spring", "Docker"]
+keywords: ["Programming", "Java", "Spring", "Docker", "Kotlin", "Testing", "Clean code", "Scala", "Software Development"]
 
 #
 ###################################
@@ -34,7 +34,7 @@ kramdown:
 #
 owner:
   name: David Romero
-  avatar: avatar-github.jpg
+  avatar: david-romero.jpg
   job: "Software Engineer"
   bio: "For several years I have a hard goal. I want to become a great software engineer, so I work hard developing quality
 software every day. Fan of new technologies. I will not stop until overcome my goals."

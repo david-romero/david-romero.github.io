@@ -1,8 +1,13 @@
 # careers section data
 # if you don't have language feature(language.yml is empty), ignore "i18n" items
+- name: Packlink
+  link: https://www.packlink.com/
+  date: Dec 2020 - <i class="fa fa-clock-o" aria-hidden="true" title="Until Now"></i>
+  job: Software Engineer
+
 - name: Sngular
-  link: https://sngular.team/
-  date: Aug 2017 - <i class="fa fa-clock-o" aria-hidden="true" title="Until Now"></i>
+  link: https://sngular.com/
+  date: Aug 2017 - Dec 2020
   job: Software Engineer
 
 - name: Konecta
