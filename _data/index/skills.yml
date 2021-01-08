@@ -2,5 +2,5 @@
 
 label: Ability
 id : cs
-aspects: TDD, Java, Git, Clean Code, FP, Spring Framework, XP
-percentage: 60, 85, 70, 80, 35, 85, 70
+aspects: TDD, Java, Git, Kotlin, FP, Spring Framework, XP
+percentage: 70, 85, 70, 80, 35, 85, 70
