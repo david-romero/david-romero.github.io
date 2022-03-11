@@ -18,13 +18,11 @@ Cats Effects has redesigned the type classes provided in version 3, and this asp
 
 In the previous version, if we wanted to use a Clock, we need to add in the bounded context in order to have a new implicit parameter. 
 ```scala
-  private def updateStatusWithError[F[_]: Clock: Functor](status: Status, error: Throwable): F[Order] = {
-    val errorCode = "0001-0003"
+  private def failed[F[_]: Clock: Functor](error: Throwable): F[Item] = {
     Clock[F].instantNow.map { now =>
       copy(
-        errorDescriptions = List(Error(errorCode, error.getMessage, now)),
-        status = status,
-        historicErrorDescriptions = errorDescriptions ::: historicErrorDescriptions
+        error = Error(error.getMessage, now)),
+        state = EXCEPTION,
       )
     }
   }
@@ -36,16 +34,16 @@ Effectively, using mocks.
 
 ```scala
 
-    it("should include the current timestamp when marked as failed") {
-      val order          = OrderBuilder().succeeded().build()
+    it("should include the time and message when marked as failed") {
+      val item          = ItemBuilder().succeeded().build()
       implicit val clock = mock[Clock[IO]]
 
       clock.realTime(*) returnsF TimeUnit.NANOSECONDS.convert(50, TimeUnit.SECONDS)
 
-      val failedOrder = order.markAsFailed(new RuntimeException("Test error")).unsafeRunSync()
+      val failedItem = item.failed(new RuntimeException("Test error")).unsafeRunSync()
 
-      failedOrder.status shouldBe FAILED
-      val error = failedOrder.errorDescriptions.head
+      failedItem.state shouldBe EXCEPTION
+      val error = failedItem.error
       error.message shouldBe "Test error"
       error.dateTime shouldBe LocalDateTime.from(Instant.ofEpochSecond(50).atZone(ZoneId.systemDefault()))
     }
@@ -58,14 +56,12 @@ Effectively, using mocks.
 Now, Let’s go to check how to use the Clock type class with the new version of the library.
 
 ```scala
-class PurchaseAnOrder[F[_]: Sync] {  
+class PurchaseAnItemUseCase[F[_]: Sync] {  
 
-  private def orderPurchasedEvent(order: Order): F[OrderPurchasedEvent] = for {
+  private def generateItemPurchasedEvent(item: Item): F[PurchaseAnItem] = for {
       now <- Clock[F].realTimeInstant
-      id  <- identifierGenerator.random
-      event = OrderPurchasedEvent(
-          orderReference = order.reference(),
-          id = id.toString,
+      event = ItemPurchasedEvent(
+          itemReference = item.identifier(),
           at = now
       )
     } yield event
@@ -90,42 +86,41 @@ Let’s check an example:
 #### Scenario 1:
 
 
-*Given an order, when the order is purchased, an event should be published.*
+*Given an item, when the item is purchased, an event should be published.*
 
 ```scala
 
-      private val now: Instant             = Instant.parse("2020-06-11T00:00:00Z")
-      private val duration: FiniteDuration = FiniteDuration(now.toEpochMilli, TimeUnit.MILLISECONDS)
+      private val duration: FiniteDuration = FiniteDuration(Instant.parse("2021-01-01T00:00:00Z").toEpochMilli, TimeUnit.MILLISECONDS)
 
-      it("should publish an OrderPurchased event") {
+      it("should publish an ItemPurchased event") {
         //given
-        val order = aOrder(items)
-        val expectedEvent = orderPurchasedEvent(order)
-        orderGateway.doRequest(order) returnsF order.asRight[Throwable]
-        eventPublisher.publish(List(expectedEvent)) returnsF (())
+        val item     = anItem()
+        val expected = itemPurchasedEvent(item)
+        gateway.doRequest(item) returnsF item.asRight[Throwable]
+        eventPublisher.publish(expectedEvent) returnsF (())
 
         //when
-        (TestControl.execute(subject.doPurchase(aShipment)) flatMap { control =>
+        (TestControl.execute(subject.doPurchase(item)) flatMap { control =>
           for {
             _ <- control.advanceAndTick(duration)
             _ <- IO {
               //then
-              eventPublisher.publish(List(expectedEvent)) was called
+              eventPublisher.publish(expectedEvent) was called
             }
           } yield ()
         }).unsafeRunSync()
       }
 ```      
 
-We’ll put the focus on lines 12-20.
+We’ll put the focus on the lines after the //when
 
-* Line 12: Decorate our subject or program with the test runtime provided by Cats.
+* Decorate our subject or program with the test runtime provided by Cats.
 
-* Line 14: We have the power to do a journey through time. We are going to travel to 2020-06-11T00:00:00Z
+* We have the power to do a journey through time. We are going to travel to 2021-01-01T00:00:00Z
 
-* Line 17: Add an assert wrapped into the IO context since we are using the IO context in the whole test.
+* Add an assert wrapped into the IO context since we are using the IO context in the whole test.
 
-* Line 20: Execute the subject or program plus the time journey plus the assert.
+* Execute the subject or program plus the time journey plus the assert.
 
 **The main aspect to take into account is the TestControl class and the adavanceAndTick function.**
 
@@ -135,44 +130,43 @@ But now, let’s go further and verify the output of a function.
 
 #### Scenario 2:
 
-*Given an order, when the order is purchased, it should return the purchased order*
+*Given an item, when the item is purchased, it should return the purchased item*
 
 
 ```scala
-  private val now: Instant             = Instant.parse("2020-06-11T00:00:00Z")
-  private val duration: FiniteDuration = FiniteDuration(now.toEpochMilli, TimeUnit.MILLISECONDS)
+  private val duration: FiniteDuration = FiniteDuration(Instant.parse("2021-01-01T00:00:00Z").toEpochMilli, TimeUnit.MILLISECONDS)
   private val kleisli                  = new (Id ~> IO) { def apply[E](e: E): IO[E] = IO.pure(e) }     
 
-     it("should return a well-defined order") {
+     it("should return a confirmed item") {
         //given
-        val order          = aOrder(items)
-        val raisedEvent    = orderPurchasedEvent(order)
-        val confirmedOrder = order.confirmed()
+        val item          = anItem()
+        val expected      = itemPurchasedEvent(item)
+        val confirmedItem = item.confirmed()
 
-        orderGateway.doRequest(order) returnsF order.asRight[Throwable]
-        eventPublisher.publish(List(expectedEvent)) returnsF (())
+        gateway.doRequest(item) returnsF item.asRight[Throwable]
+        eventPublisher.publish(expectedEvent) returnsF (())
 
         //when
-        (TestControl.execute(subject.doPurchase(order)) flatMap { control =>
+        (TestControl.execute(subject.doPurchase(item)) flatMap { control =>
           for {
             _     <- control.advanceAndTick(duration)
-            order <- control.results
+            item  <- control.results
             _ <- IO {
               //then
-              order.value.mapK(kleisli).embed(IO.pure(order.failed(TestingPurposeError))) shouldBe confirmedOrder.pure[IO]
+              item.value.mapK(kleisli).embed(IO.pure(item.failed(TestingPurposeError))) shouldBe IO.pure(confirmedItem)
             }
           } yield ()
         }).unsafeRunSync()
       }
 ```
 
-We’ll put the focus on lines 14-20.
+We’ll put the focus on the lines after the // when
 
-* Line 14: Decorate our subject or program with the test runtime provided by Cats.
+* Decorate our subject or program with the test runtime provided by Cats.
 
-* Line 14: We have the power to do a journey through time. We are going to travel to 2020-06-11T00:00:00Z
+* We have the power to do a journey through time. We are going to travel to 2021-01-01T00:00:00Z
 
-* Line 17: Obtain the result of our subject. The type of the order variable is Option[Outcome[Id, Throwable, Order]]
+* Obtain the result of our subject. The type of the item variable is Option[Outcome[Id, Throwable, Item]]
 
 * Line 20: The magic is here: I’m going to describe each operation step by step.
 
@@ -180,7 +174,7 @@ We’ll put the focus on lines 14-20.
 
     - Using Kleisli, map the monad from Id to IO since we are using IO.
 
-    - At this point, we have the following type: `Outcome[IO, Throwable, Order]` and we want to extract the Order object. The Outcome type class is designed to model fibers execution status.
+    - At this point, we have the following type: `Outcome[IO, Throwable, Item]` and we want to extract the Item object. The Outcome type class is designed to model fibers execution status.
 
     ```scala
     sealed trait Outcome[F[_], E, A]
@@ -189,7 +183,7 @@ We’ll put the focus on lines 14-20.
     final case class Canceled[F[_], E, A]() extends Outcome[F, E, A]
     ```
 
-    - The Outcome type class provides an embed function with the aim of returning the result of the fiber or a fallback provided just in case the fiber is canceled. So, with the following statement: `order.value.mapK(kleisli).embed(IO.pure(order.failed(TestingPurposeError)))` we are extracting the order from the fiber result wrapped into IO.
+    - The Outcome type class provides an embed function with the aim of returning the result of the fiber or a fallback provided just in case the fiber is canceled. So, with the following statement: `item.value.mapK(kleisli).embed(IO.pure(item.failed(TestingPurposeError)))` we are extracting the item from the fiber result wrapped into IO.
 
     - The final step is to add an assert to verify that the output is the desired one.
 
@@ -201,6 +195,6 @@ We’ll put the focus on lines 14-20.
 
 - The test is decorated with an IO, so you have to execute unsafeRunSync at the end of the TestControl statement.
 
-- To extract the value from the fiber could be a little tedious and verbose. `order.value.mapK(kleisli).embed(IO.pure(order.failed(TestingPurposeError)))`
+- To extract the value from the fiber could be a little tedious and verbose. `item.value.mapK(kleisli).embed(IO.pure(item.failed(TestingPurposeError)))`
 
 - Kleisli is like a Monad transformer.
