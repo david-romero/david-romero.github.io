@@ -172,7 +172,7 @@ We’ll put the focus on lines 14-20.
 
 * Line 14: We have the power to do a journey through time. We are going to travel to 2020-06-11T00:00:00Z
 
-* Line 17: Obtain the result of our subject. The type of the label variable is Option[Outcome[Id, Throwable, Label]]
+* Line 17: Obtain the result of our subject. The type of the order variable is Option[Outcome[Id, Throwable, Order]]
 
 * Line 20: The magic is here: I’m going to describe each operation step by step.
 
