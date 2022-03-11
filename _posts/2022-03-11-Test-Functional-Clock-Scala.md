@@ -12,7 +12,9 @@ Cats Effects has redesigned the type classes provided in version 3, and this asp
 
 ![Type-Classes]({{ "/img/cats-type-classes.png" | absolute_url }})
 
-## Context
+
+## Context
+
 
 In the previous version, if we wanted to use a Clock, we need to add in the bounded context in order to have a new implicit parameter. 
 ```scala
@@ -49,7 +51,9 @@ Effectively, using mocks.
     }
 ```  
 
-## Migrating to Cats Effects 3
+
+## Migrating to Cats Effects 3
+
 
 Now, Let’s go to check how to use the Clock type class with the new version of the library.
 
@@ -77,15 +81,17 @@ Cats Effects provide a runtime that can be mocked to use with fibers, callbacks,
 
 You need to add the following dependency to take advantage of this feature:
 
-libraryDependencies += "org.typelevel" %% "cats-effect-testkit" % "3.3.7" % Test
+`libraryDependencies += "org.typelevel" %% "cats-effect-testkit" % "3.3.7" % Test`
 
-With the TestControl class, you can “advance in the time” so, taking this into account, if you go to a certain period of time and use the Clock[F].realTimeInstant, in fact, we are mocking a timer.
+With the TestControl class, you can “advance in the time” so, taking this into account, if you go to a certain period of time and use the `Clock[F].realTimeInstant`, in fact, we are mocking a timer.
 
 Let’s check an example:
 
 #### Scenario 1:
 
-Given an order, when the order is purchased, an event should be published.
+
+*Given an order, when the order is purchased, an event should be published.*
+
 ```scala
 
       private val now: Instant             = Instant.parse("2020-06-11T00:00:00Z")
@@ -129,7 +135,8 @@ But now, let’s go further and verify the output of a function.
 
 #### Scenario 2:
 
-Given an order, when the order is purchased, it should return the purchased order
+*Given an order, when the order is purchased, it should return the purchased order*
+
 
 ```scala
   private val now: Instant             = Instant.parse("2020-06-11T00:00:00Z")
@@ -173,7 +180,7 @@ We’ll put the focus on lines 14-20.
 
     - Using Kleisli, map the monad from Id to IO since we are using IO.
 
-    - At this point, we have the following type: Outcome[IO, Throwable, Order] and we want to extract the Order object. The Outcome type class is designed to model fibers execution status.
+    - At this point, we have the following type: `Outcome[IO, Throwable, Order]` and we want to extract the Order object. The Outcome type class is designed to model fibers execution status.
 
     ```scala
     sealed trait Outcome[F[_], E, A]
@@ -186,12 +193,14 @@ We’ll put the focus on lines 14-20.
 
     - The final step is to add an assert to verify that the output is the desired one.
 
-## TL;DR
 
-- Using TestControl.execute(F[A]) and control.advanceAndTick(duration) you can mock the time of the test execution.
+## TL;DR
+
+
+- Using `TestControl.execute(F[A])` and `control.advanceAndTick(duration)` you can mock the time of the test execution.
 
 - The test is decorated with an IO, so you have to execute unsafeRunSync at the end of the TestControl statement.
 
-- To extract the value from the fiber could be a little tedious and verbose. label.value.mapK(nt).embed(IO.pure(Label.failed(aShipment)))
+- To extract the value from the fiber could be a little tedious and verbose. `order.value.mapK(kleisli).embed(IO.pure(order.failed(TestingPurposeError)))`
 
 - Kleisli is like a Monad transformer.
