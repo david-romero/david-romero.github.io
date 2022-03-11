@@ -2,7 +2,7 @@
 layout: post
 title:  "How to test Clock[F].realTimeInstant in Cats Effects 3.X"
 date:   2022-03-11 09:00:00
-categories: [Testing, Scala, Functional Programming, Cats, Cats Effects]
+categories: [Testing, Scala, Functional Programming, Cats, Cats Effects, Tutorial]
 comments: true
 ---
 
